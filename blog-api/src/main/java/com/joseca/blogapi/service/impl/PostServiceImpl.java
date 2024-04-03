@@ -3,6 +3,9 @@ package com.joseca.blogapi.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.joseca.blogapi.dto.PostDTO;
@@ -22,7 +25,6 @@ public class PostServiceImpl implements PostService {
         this.postRepository = postRepository;
     }
 
-    @SuppressWarnings("null")
     @Override
     public PostDTO createPost(PostDTO postDTO) {
         Post post = mapToEntity(postDTO);
@@ -33,14 +35,15 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+    public List<PostDTO> getAllPosts(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        return posts;
+        Page<Post> posts = postRepository.findAll(pageable);
+
+        return posts.toList().stream().map(post -> mapToDTO(post)).toList();
     }
 
     @Override
-    @SuppressWarnings("null")
     public Post getPostById(Long id) {
         Post post = postRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Post", "id", id.toString()));
@@ -65,7 +68,6 @@ public class PostServiceImpl implements PostService {
     private PostDTO mapToDTO(Post post) {
         PostDTO postDTO = new PostDTO();
 
-        postDTO.setId(post.getId());
         postDTO.setTitle(post.getTitle());
         postDTO.setDescription(post.getDescription());
         postDTO.setContent(post.getContent());

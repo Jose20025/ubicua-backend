@@ -8,7 +8,7 @@ import com.joseca.blogapi.entity.Post;
 public interface PostService {
     PostDTO createPost(PostDTO postDTO);
 
-    List<Post> getAllPosts();
+    List<PostDTO> getAllPosts(int pageSize, int pageNumber);
 
     Post getPostById(Long id);
 
