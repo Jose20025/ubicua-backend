@@ -1,7 +1,5 @@
 package com.joseca.blogapi.controller;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -10,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.joseca.blogapi.dto.PostDTO;
+import com.joseca.blogapi.dto.PostResponseDTO;
 import com.joseca.blogapi.entity.Post;
 import com.joseca.blogapi.service.PostService;
 
@@ -28,7 +27,8 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PostDTO>> getAllPosts(@RequestParam(defaultValue = "0", required = false) int pageNumber,
+    public ResponseEntity<PostResponseDTO> getAllPosts(
+            @RequestParam(defaultValue = "0", required = false) int pageNumber,
             @RequestParam(defaultValue = "10", required = false) int pageSize) {
         return new ResponseEntity<>(postService.getAllPosts(pageNumber, pageSize), HttpStatus.OK);
     }

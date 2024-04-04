@@ -1,7 +1,5 @@
 package com.joseca.blogapi.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -9,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.joseca.blogapi.dto.PostDTO;
+import com.joseca.blogapi.dto.PostResponseDTO;
 import com.joseca.blogapi.entity.Post;
 import com.joseca.blogapi.exception.ResourceNotFoundException;
 import com.joseca.blogapi.repository.PostRepository;
@@ -35,12 +34,21 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getAllPosts(int pageNumber, int pageSize) {
+    public PostResponseDTO getAllPosts(int pageNumber, int pageSize) {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
         Page<Post> posts = postRepository.findAll(pageable);
 
-        return posts.toList().stream().map(post -> mapToDTO(post)).toList();
+        PostResponseDTO postResponseDTO = new PostResponseDTO();
+
+        postResponseDTO.setData(posts.toList().stream().map(post -> mapToDTO(post)).toList());
+        postResponseDTO.setPageNumber(posts.getNumber());
+        postResponseDTO.setPageSize(posts.getSize());
+        postResponseDTO.setTotalElementsCount(posts.getNumberOfElements());
+        postResponseDTO.setTotalPages(posts.getTotalPages());
+        postResponseDTO.setLastPage(posts.isLast());
+
+        return postResponseDTO;
     }
 
     @Override
